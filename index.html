@@ -30,7 +30,7 @@
                 <i class="fab fa-telegram-plane"></i> Support
             </a>
             <button onclick="toggleAdmin()" class="bg-pink-600/20 border border-pink-500 text-pink-300 px-3 py-1 rounded-full text-xs">
-                <i class="fas fa-user-shield mr-1"></i> Admin
+                <i class="fas fa-user-shield mr-1"></i> Admin Panel
             </button>
         </div>
     </header>
@@ -48,14 +48,41 @@
             </div>
         </div>
 
-        <!-- Admin Panel Section (Hidden by default) -->
-        <div id="adminSection" class="hidden bg-[#130c24] border border-pink-500/50 p-4 rounded-2xl mb-4 text-xs">
-            <h3 class="font-bold text-pink-400 mb-2 text-sm"><i class="fas fa-cog mr-1"></i> অ্যাডমিন অর্ডার লিস্ট ও কি ম্যানেজমেন্ট</h3>
-            <div id="adminOrderList" class="space-y-2 max-h-60 overflow-y-auto"></div>
+        <!-- Admin Panel Section (Hidden by default, click Admin button to open) -->
+        <div id="adminSection" class="hidden bg-[#130c24] border border-pink-500/50 p-4 rounded-2xl mb-4 text-xs space-y-4">
+            <h3 class="font-bold text-pink-400 text-sm border-b border-purple-900 pb-2"><i class="fas fa-cog mr-1"></i> অ্যাডমিন কন্ট্রোল প্যানেল</h3>
+            
+            <!-- Add New Panel Form -->
+            <div class="bg-[#0b0716] p-3 rounded-xl border border-purple-800 space-y-2">
+                <p class="font-bold text-purple-300">+ নতুন প্যানেল যোগ করুন</p>
+                <input type="text" id="newPanelName" placeholder="প্যানেলের নাম (যেমন: VIP ROOT PANEL)" class="w-full bg-black border border-purple-700 p-2 rounded text-white text-xs">
+                <div class="flex gap-2">
+                    <select id="newPanelCat" class="w-1/2 bg-black border border-purple-700 p-2 rounded text-white text-xs">
+                        <option value="ROOT">ROOT</option>
+                        <option value="NON ROOT">NON ROOT</option>
+                        <option value="IOS">IOS</option>
+                        <option value="PC">PC</option>
+                    </select>
+                    <input type="number" id="newPanelPrice" placeholder="দাম (৳)" class="w-1/2 bg-black border border-purple-700 p-2 rounded text-white text-xs">
+                </div>
+                <button onclick="addNewPanel()" class="w-full btn-gradient py-2 rounded font-bold text-white">প্যানেল পাবলিশ করুন</button>
+            </div>
+
+            <!-- Manage Orders & Keys -->
+            <div>
+                <p class="font-bold text-green-400 mb-2">কাস্টমার অর্ডার ও লাইসেন্স কি ম্যানেজমেন্ট</p>
+                <div id="adminOrderList" class="space-y-2 max-h-60 overflow-y-auto"></div>
+            </div>
         </div>
 
-        <!-- Product Grid -->
-        <div id="productGrid" class="grid grid-cols-2 gap-3 mt-2"></div>
+        <!-- Product Grid Title -->
+        <div class="flex justify-between items-center mb-2 px-1">
+            <h3 class="text-xs font-bold text-purple-300 uppercase tracking-wider">Available Panels</h3>
+            <span class="text-[10px] text-gray-400">হোম পেজ / স্টোর</span>
+        </div>
+
+        <!-- Product Grid (Customer View) -->
+        <div id="productGrid" class="grid grid-cols-2 gap-3"></div>
 
     </main>
 
@@ -115,7 +142,8 @@
     </nav>
 
     <script>
-        const panels = [
+        // ডিফল্ট প্যানেল ডাটা
+        let panels = JSON.parse(localStorage.getItem('mazedPanels')) || [
             { id: 1, name: "DRIP CLIENT ROOT", price: 300, cat: "ROOT" },
             { id: 2, name: "VYRTX NON-ROOT VIP", price: 350, cat: "NON ROOT" },
             { id: 3, name: "IOS HACK PANEL", price: 500, cat: "IOS" },
@@ -128,7 +156,6 @@
         function renderProducts() {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = '';
-            panels.exports = '';
             panels.forEach(p => {
                 grid.innerHTML += `
                     <div class="neon-card rounded-xl p-3 flex flex-col justify-between">
@@ -145,93 +172,24 @@
             });
         }
 
-        function openModal(id) {
-            selectedPanel = panels.find(p => p.id === id);
-            document.getElementById('modalTitle').innerText = selectedPanel.name;
-            document.getElementById('modalPrice').innerText = `মূল্য: ৳ ${selectedPanel.price} BDT`;
-            document.getElementById('orderModal').classList.remove('hidden');
-        }
+        // অ্যাডমিন প্যানেল থেকে নতুন প্যানেল যোগ করার ফাংশন
+        function addNewPanel() {
+            const name = document.getElementById('newPanelName').value.trim();
+            const cat = document.getElementById('newPanelCat').value;
+            const price = Number(document.getElementById('newPanelPrice').value);
 
-        function closeModal() {
-            document.getElementById('orderModal').classList.add('hidden');
-        }
-
-        function submitOrder() {
-            const trxId = document.getElementById('trxId').value.trim();
-            if(!trxId) {
-                alert("দয়া করে ট্রানজেকশন আইডি (TrxID) দিন!");
+            if(!name || !price) {
+                alert("দয়া করে প্যানেলের নাম এবং সঠিক দাম লিখুন!");
                 return;
             }
 
-            const newOrder = {
-                id: "ORD-" + Math.floor(1000 + Math.random() * 9000),
-                panel: selectedPanel.name,
-                price: selectedPanel.price,
-                method: document.getElementById('payMethod').value,
-                trxId: trxId,
-                status: "Pending",
-                key: "অ্যাডমিন এখনো কি (Key) দেয়নি"
+            const newP = {
+                id: Date.now(),
+                name: name,
+                price: price,
+                cat: cat
             };
 
-            orders.unshift(newOrder);
-            localStorage.setItem('mazedOrders', JSON.stringify(orders));
-            closeModal();
-            document.getElementById('trxId').value = '';
-            alert("অর্ডার সফল হয়েছে! My Orders অপশন থেকে স্ট্যাটাস দেখতে পাবেন।");
-        }
-
-        function openMyOrders() {
-            const list = document.getElementById('customerOrderList');
-            list.innerHTML = orders.length === 0 ? '<p class="text-gray-400 text-center">কোনো অর্ডার নেই</p>' : '';
-            orders.forEach(o => {
-                list.innerHTML += `
-                    <div class="bg-[#0b0716] border border-purple-800 p-2.5 rounded-xl mb-2">
-                        <p class="font-bold text-pink-400">${o.panel}</p>
-                        <p class="text-gray-400">TrxID: ${o.trxId} | স্ট্যাটাস: <span class="${o.status === 'Completed' ? 'text-green-400' : 'text-yellow-400'}">${o.status}</span></p>
-                        <div class="mt-1 bg-purple-950 p-1.5 rounded text-green-300 font-mono">Key: ${o.key}</div>
-                    </div>
-                `;
-            });
-            document.getElementById('myOrdersModal').classList.remove('hidden');
-        }
-
-        function toggleAdmin() {
-            const sec = document.getElementById('adminSection');
-            sec.classList.toggle('hidden');
-            renderAdminOrders();
-        }
-
-        function renderAdminOrders() {
-            const list = document.getElementById('adminOrderList');
-            list.innerHTML = orders.length === 0 ? '<p class="text-gray-400">কোনো অর্ডার জমা হয়নি</p>' : '';
-            orders.forEach((o, index) => {
-                list.innerHTML += `
-                    <div class="bg-[#090612] border border-purple-900 p-2.5 rounded-xl mb-2">
-                        <p class="font-bold text-white">${o.id} - ${o.panel} (৳${o.price})</p>
-                        <p class="text-gray-300">TrxID: <span class="text-yellow-400">${o.trxId}</span> (${o.method})</p>
-                        <div class="mt-2 flex gap-2">
-                            <input type="text" id="key-${index}" placeholder="লাইসেন্স কি লিখুন" class="w-full bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
-                            <button onclick="approve(${index})" class="bg-green-600 px-2 py-1 rounded text-white font-bold whitespace-nowrap">Approve</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function approve(index) {
-            const keyVal = document.getElementById(`key-${index}`).value;
-            if(!keyVal) {
-                alert("দয়া করে লাইসেন্স কি (Key) লিখুন!");
-                return;
-            }
-            orders[index].status = "Completed";
-            orders[index].key = keyVal;
-            localStorage.setItem('mazedOrders', JSON.stringify(orders));
-            renderAdminOrders();
-            alert("সফলভাবে অ্যাপ্রুভ করা হয়েছে!");
-        }
-
-        renderProducts();
-    </script>
-</body>
-</html>
+            panels.unshift(newP);
+            localStorage.setItem('mazedPanels', JSON.stringify(panels));
+            document.getElementById('newPanelName
