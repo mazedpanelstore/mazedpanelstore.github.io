@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mazed Panel Store - Client Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #0b0716; color: #ffffff; font-family: 'Segoe UI', sans-serif; }
+        .neon-border { border: 1px solid rgba(168, 85, 247, 0.4); box-shadow: 0 0 15px rgba(168, 85, 247, 0.15); }
+        .neon-card { background: linear-gradient(145deg, #160f29, #0f0a1d); border: 1px solid #2e1d59; transition: 0.3s; }
+        .btn-gradient { background: linear-gradient(90deg, #9333ea, #ec4899); }
+        .glass-nav { background: rgba(15, 10, 29, 0.95); backdrop-filter: blur(10px); border-top: 1px solid #2e1d59; }
+    </style>
+</head>
+<body class="pb-24">
+
+    <!-- Top Header -->
+    <header class="sticky top-0 z-40 bg-[#0f0a1d]/95 border-b border-purple-900/50 px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="w-9 h-9 rounded-full btn-gradient flex items-center justify-center font-bold text-lg">M</div>
+            <div>
+                <h1 class="font-bold text-sm tracking-wider text-purple-300">MAZED PANEL STORE</h1>
+                <p class="text-[10px] text-green-400">● OFFICIAL INSTANT STORE</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <a href="https://t.me/mazedvai12" target="_blank" class="bg-blue-600/20 border border-blue-500 text-blue-300 px-3 py-1 rounded-full text-xs flex items-center gap-1">
+                <i class="fab fa-telegram-plane"></i> Support
+            </a>
+            <button onclick="toggleAdmin()" class="bg-pink-600/20 border border-pink-500 text-pink-300 px-3 py-1 rounded-full text-xs">
+                <i class="fas fa-user-shield mr-1"></i> Admin
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-md mx-auto px-3 pt-4">
+        
+        <!-- Banner & Payment Notice -->
+        <div class="rounded-2xl overflow-hidden neon-border mb-4 relative bg-gradient-to-r from-purple-900 via-indigo-900 to-pink-900 p-4">
+            <span class="bg-yellow-500 text-black text-[10px] font-bold px-2 py-0.5 rounded uppercase">24/7 Auto Delivery</span>
+            <h2 class="text-lg font-extrabold mt-2 leading-tight">সেরা গেমিং প্যানেল কিনুন <br><span class="text-pink-400">সবচেয়ে কম দামে!</span></h2>
+            <div class="mt-3 bg-black/40 p-2.5 rounded-xl border border-purple-500/30 text-xs space-y-1">
+                <p class="text-purple-300 font-bold"><i class="fas fa-wallet mr-1"></i> পেমেন্ট নাম্বার (Send Money):</p>
+                <p class="text-orange-400 font-mono">নগদ / রকেট: <span class="font-bold">01723711057</span> (Personal)</p>
+            </div>
+        </div>
+
+        <!-- Admin Panel Section (Hidden by default) -->
+        <div id="adminSection" class="hidden bg-[#130c24] border border-pink-500/50 p-4 rounded-2xl mb-4 text-xs">
+            <h3 class="font-bold text-pink-400 mb-2 text-sm"><i class="fas fa-cog mr-1"></i> অ্যাডমিন অর্ডার লিস্ট ও কি ম্যানেজমেন্ট</h3>
+            <div id="adminOrderList" class="space-y-2 max-h-60 overflow-y-auto"></div>
+        </div>
+
+        <!-- Product Grid -->
+        <div id="productGrid" class="grid grid-cols-2 gap-3 mt-2"></div>
+
+    </main>
+
+    <!-- Order Modal -->
+    <div id="orderModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#140d26] border border-purple-500/50 rounded-2xl w-full max-w-sm p-5 relative">
+            <button onclick="closeModal()" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-gray-800 text-gray-300">✕</button>
+            
+            <div class="text-center mb-4">
+                <h3 id="modalTitle" class="font-bold text-lg text-white">Product Name</h3>
+                <span class="text-xs text-green-400" id="modalPrice">৳ 0 BDT</span>
+            </div>
+
+            <div class="space-y-2.5 mb-4 text-xs">
+                <div>
+                    <label class="block text-gray-400 mb-1">পেমেন্ট মেথড:</label>
+                    <select id="payMethod" class="w-full bg-[#0b0716] border border-purple-700 rounded-lg p-2 text-white">
+                        <option value="Nagad">Nagad (01723711057)</option>
+                        <option value="Rocket">Rocket (01723711057)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-400 mb-1">আপনার ট্রানজেকশন আইডি (TrxID):</label>
+                    <input type="text" id="trxId" placeholder="যেমন: 9H7G6F5D4S" class="w-full bg-[#0b0716] border border-purple-700 rounded-lg p-2 text-white">
+                </div>
+            </div>
+
+            <button onclick="submitOrder()" class="w-full btn-gradient py-2.5 rounded-xl font-bold text-sm shadow-lg text-white">
+                কনফার্ম অর্ডার করুন
+            </button>
+        </div>
+    </div>
+
+    <!-- My Orders Modal -->
+    <div id="myOrdersModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#140d26] border border-purple-500/50 rounded-2xl w-full max-w-sm p-5 relative max-h-[80vh] overflow-y-auto text-xs">
+            <button onclick="document.getElementById('myOrdersModal').classList.add('hidden')" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-gray-800 text-gray-300">✕</button>
+            <h3 class="font-bold text-lg text-purple-300 mb-3"><i class="fas fa-shopping-bag mr-2"></i>আমার অর্ডারসমূহ</h3>
+            <div id="customerOrderList" class="space-y-2.5"></div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 glass-nav py-2 px-6 flex justify-around items-center z-40 max-w-md mx-auto">
+        <button onclick="location.reload()" class="flex flex-col items-center text-pink-500">
+            <i class="fas fa-store text-lg"></i>
+            <span class="text-[10px] mt-1 font-semibold">Store</span>
+        </button>
+        <button onclick="openMyOrders()" class="flex flex-col items-center text-gray-400 hover:text-white">
+            <i class="fas fa-box-open text-lg"></i>
+            <span class="text-[10px] mt-1">My Orders</span>
+        </button>
+        <a href="https://t.me/mazedvai12" target="_blank" class="flex flex-col items-center text-gray-400 hover:text-white">
+            <i class="fab fa-telegram-plane text-lg"></i>
+            <span class="text-[10px] mt-1">Support</span>
+        </a>
+    </nav>
+
+    <script>
+        const panels = [
+            { id: 1, name: "DRIP CLIENT ROOT", price: 300, cat: "ROOT" },
+            { id: 2, name: "VYRTX NON-ROOT VIP", price: 350, cat: "NON ROOT" },
+            { id: 3, name: "IOS HACK PANEL", price: 500, cat: "IOS" },
+            { id: 4, name: "PC EMULATOR PANEL", price: 800, cat: "PC" }
+        ];
+
+        let orders = JSON.parse(localStorage.getItem('mazedOrders')) || [];
+        let selectedPanel = null;
+
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+            panels.exports = '';
+            panels.forEach(p => {
+                grid.innerHTML += `
+                    <div class="neon-card rounded-xl p-3 flex flex-col justify-between">
+                        <div>
+                            <span class="text-[9px] bg-purple-900/50 text-purple-300 px-2 py-0.5 rounded border border-purple-700">${p.cat}</span>
+                            <h3 class="font-bold text-xs mt-2 text-white">${p.name}</h3>
+                        </div>
+                        <div class="mt-3 pt-2 border-t border-purple-900/50 flex justify-between items-center">
+                            <span class="text-xs font-extrabold text-pink-400">৳${p.price}</span>
+                            <button onclick="openModal(${p.id})" class="btn-gradient text-white text-[11px] font-bold px-3 py-1.5 rounded-lg">BUY</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function openModal(id) {
+            selectedPanel = panels.find(p => p.id === id);
+            document.getElementById('modalTitle').innerText = selectedPanel.name;
+            document.getElementById('modalPrice').innerText = `মূল্য: ৳ ${selectedPanel.price} BDT`;
+            document.getElementById('orderModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('orderModal').classList.add('hidden');
+        }
+
+        function submitOrder() {
+            const trxId = document.getElementById('trxId').value.trim();
+            if(!trxId) {
+                alert("দয়া করে ট্রানজেকশন আইডি (TrxID) দিন!");
+                return;
+            }
+
+            const newOrder = {
+                id: "ORD-" + Math.floor(1000 + Math.random() * 9000),
+                panel: selectedPanel.name,
+                price: selectedPanel.price,
+                method: document.getElementById('payMethod').value,
+                trxId: trxId,
+                status: "Pending",
+                key: "অ্যাডমিন এখনো কি (Key) দেয়নি"
+            };
+
+            orders.unshift(newOrder);
+            localStorage.setItem('mazedOrders', JSON.stringify(orders));
+            closeModal();
+            document.getElementById('trxId').value = '';
+            alert("অর্ডার সফল হয়েছে! My Orders অপশন থেকে স্ট্যাটাস দেখতে পাবেন।");
+        }
+
+        function openMyOrders() {
+            const list = document.getElementById('customerOrderList');
+            list.innerHTML = orders.length === 0 ? '<p class="text-gray-400 text-center">কোনো অর্ডার নেই</p>' : '';
+            orders.forEach(o => {
+                list.innerHTML += `
+                    <div class="bg-[#0b0716] border border-purple-800 p-2.5 rounded-xl mb-2">
+                        <p class="font-bold text-pink-400">${o.panel}</p>
+                        <p class="text-gray-400">TrxID: ${o.trxId} | স্ট্যাটাস: <span class="${o.status === 'Completed' ? 'text-green-400' : 'text-yellow-400'}">${o.status}</span></p>
+                        <div class="mt-1 bg-purple-950 p-1.5 rounded text-green-300 font-mono">Key: ${o.key}</div>
+                    </div>
+                `;
+            });
+            document.getElementById('myOrdersModal').classList.remove('hidden');
+        }
+
+        function toggleAdmin() {
+            const sec = document.getElementById('adminSection');
+            sec.classList.toggle('hidden');
+            renderAdminOrders();
+        }
+
+        function renderAdminOrders() {
+            const list = document.getElementById('adminOrderList');
+            list.innerHTML = orders.length === 0 ? '<p class="text-gray-400">কোনো অর্ডার জমা হয়নি</p>' : '';
+            orders.forEach((o, index) => {
+                list.innerHTML += `
+                    <div class="bg-[#090612] border border-purple-900 p-2.5 rounded-xl mb-2">
+                        <p class="font-bold text-white">${o.id} - ${o.panel} (৳${o.price})</p>
+                        <p class="text-gray-300">TrxID: <span class="text-yellow-400">${o.trxId}</span> (${o.method})</p>
+                        <div class="mt-2 flex gap-2">
+                            <input type="text" id="key-${index}" placeholder="লাইসেন্স কি লিখুন" class="w-full bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                            <button onclick="approve(${index})" class="bg-green-600 px-2 py-1 rounded text-white font-bold whitespace-nowrap">Approve</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function approve(index) {
+            const keyVal = document.getElementById(`key-${index}`).value;
+            if(!keyVal) {
+                alert("দয়া করে লাইসেন্স কি (Key) লিখুন!");
+                return;
+            }
+            orders[index].status = "Completed";
+            orders[index].key = keyVal;
+            localStorage.setItem('mazedOrders', JSON.stringify(orders));
+            renderAdminOrders();
+            alert("সফলভাবে অ্যাপ্রুভ করা হয়েছে!");
+        }
+
+        renderProducts();
+    </script>
+</body>
+</html>
