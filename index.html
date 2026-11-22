@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mazed Panel Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #0b0716; color: #fff; font-family: 'Segoe UI', sans-serif; }
+        .card { background: #160f29; border: 1px solid #3b2070; }
+        .btn { background: linear-gradient(90deg, #9333ea, #ec4899); }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="pb-24">
+
+    <!-- Header -->
+    <header class="bg-[#120b24] border-b border-purple-800 p-3 flex justify-between items-center sticky top-0 z-40">
+        <div class="flex items-center gap-2.5">
+            <img id="siteLogoImg" src="" class="w-9 h-9 rounded-full object-cover border border-pink-500 hidden">
+            <div id="siteLogoFallback" class="w-9 h-9 rounded-full btn flex items-center justify-center font-bold text-sm">M</div>
+            <div>
+                <h1 class="font-bold text-xs text-purple-300 tracking-wide">MAZED PANEL STORE</h1>
+                <p class="text-[10px] text-green-400">● OFFICIAL STORE</p>
+            </div>
+        </div>
+        <div id="headerUserBadge" onclick="openProfileModal()" class="cursor-pointer bg-purple-900/40 border border-purple-600 px-2.5 py-1 rounded-full text-[11px] flex items-center gap-1.5">
+            <i class="fas fa-user-circle text-pink-400"></i>
+            <span id="headerUserName">Login / Sign Up</span>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto p-3 space-y-4">
+        
+        <!-- Multi-Slide Banner with Video Link -->
+        <div class="relative rounded-xl overflow-hidden border border-purple-600/50 bg-[#160f29]">
+            <div id="slideContainer" class="relative h-40 w-full flex items-center justify-center">
+                <!-- Slides rendered via JS -->
+            </div>
+            <div id="slideDots" class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5"></div>
+        </div>
+
+        <!-- Store Title -->
+        <div class="flex justify-between items-center">
+            <h3 class="text-xs font-bold text-purple-300 uppercase tracking-wider">Available Panels</h3>
+            <span class="text-[10px] text-gray-400">Instant Delivery</span>
+        </div>
+
+        <!-- Product Grid -->
+        <div id="storeGrid" class="grid grid-cols-2 gap-2.5"></div>
+    </main>
+
+    <!-- Floating Support Icon (Left side above bottom nav / profile) -->
+    <div class="fixed bottom-16 left-4 z-40">
+        <button onclick="openSupportModal()" class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-500 shadow-lg shadow-blue-500/40 flex items-center justify-center text-white text-xl border-2 border-white/20 animate-bounce">
+            <i class="fas fa-headset"></i>
+        </button>
+    </div>
+
+    <!-- Bottom Navigation (Left: Home, Center: Orders, Right: Profile) -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-[#120b24] border-t border-purple-800 py-2 flex justify-around text-xs z-40 max-w-md mx-auto">
+        <button onclick="location.reload()" class="text-pink-500 flex flex-col items-center">
+            <i class="fas fa-home text-base"></i><span>Home</span>
+        </button>
+        <button onclick="showMyOrders()" class="text-gray-400 flex flex-col items-center">
+            <i class="fas fa-box text-base"></i><span>My Orders</span>
+        </button>
+        <button onclick="openProfileModal()" class="text-gray-400 flex flex-col items-center">
+            <i class="fas fa-user text-base"></i><span>Profile</span>
+        </button>
+    </nav>
+
+    <!-- Support Modal (Telegram & WhatsApp: mazedvai12) -->
+    <div id="supportModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#160f29] border border-purple-500 rounded-2xl w-full max-w-xs p-5 relative text-center space-y-3">
+            <button onclick="closeModal('supportModal')" class="absolute top-3 right-3 w-7 h-7 bg-gray-800 rounded-full text-xs">✕</button>
+            <div class="w-12 h-12 rounded-full bg-blue-600/20 border border-blue-500 mx-auto flex items-center justify-center text-blue-400 text-xl">
+                <i class="fas fa-headset"></i>
+            </div>
+            <h3 class="font-bold text-base">লাইভ সাপোর্ট সেন্টার</h3>
+            <p class="text-xs text-gray-400">যেকোনো সমস্যায় সরাসরি যোগাযোগ করুন (@mazedvai12)</p>
+            <div class="space-y-2 pt-2">
+                <a href="https://t.me/mazedvai12" target="_blank" class="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 font-bold text-xs flex items-center justify-center gap-2">
+                    <i class="fab fa-telegram-plane text-base"></i> Telegram Support
+                </a>
+                <a href="https://wa.me/8801723711057?text=Hello%20mazedvai12,%20I%20need%20support" target="_blank" class="w-full py-2.5 rounded-xl bg-green-600 hover:bg-green-700 font-bold text-xs flex items-center justify-center gap-2">
+                    <i class="fab fa-whatsapp text-base"></i> WhatsApp Support
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal (First Time Register / Login) -->
+    <div id="authModal" class="fixed inset-0 bg-black/85 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#160f29] border border-purple-500 rounded-2xl w-full max-w-sm p-5 relative text-xs space-y-3">
+            <button onclick="closeModal('authModal')" class="absolute top-3 right-3 w-7 h-7 bg-gray-800 rounded-full">✕</button>
+            <h3 id="authTitle" class="font-bold text-base text-center text-pink-400">নতুন অ্যাকাউন্ট তৈরি করুন</h3>
+            <p class="text-center text-gray-400 text-[11px]">প্যানেল কেনার আগে অবশ্যই আপনার প্রোফাইল তৈরি বা লগইন করুন</p>
+            
+            <!-- Register Form -->
+            <div id="regForm" class="space-y-2.5">
+                <input type="text" id="regName" placeholder="আপনার নাম (Username)" class="w-full bg-black border border-purple-700 p-2.5 rounded-lg text-white">
+                <input type="text" id="regEmail" placeholder="জিমেইল অথবা মোবাইল নাম্বার" class="w-full bg-black border border-purple-700 p-2.5 rounded-lg text-white">
+                <input type="password" id="regPass" placeholder="নিজস্ব পাসওয়ার্ড দিন" class="w-full bg-black border border-purple-700 p-2.5 rounded-lg text-white">
+                <button onclick="registerUser()" class="w-full btn py-2.5 rounded-lg font-bold text-sm">প্রোফাইল তৈরি করুন</button>
+                <p class="text-center text-gray-400 pt-1">আগে অ্যাকাউন্ট করা থাকলে? <span onclick="switchAuth('login')" class="text-pink-400 font-bold cursor-pointer underline">লগইন করুন</span></p>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm" class="space-y-2.5 hidden">
+                <input type="text" id="logUser" placeholder="আপনার নাম (Username) অথবা জিমেইল" class="w-full bg-black border border-purple-700 p-2.5 rounded-lg text-white">
+                <input type="password" id="logPass" placeholder="পাসওয়ার্ড দিন" class="w-full bg-black border border-purple-700 p-2.5 rounded-lg text-white">
+                <button onclick="loginUser()" class="w-full btn py-2.5 rounded-lg font-bold text-sm">লগইন করুন</button>
+                <p class="text-center text-gray-400 pt-1">নতুন ইউজার? <span onclick="switchAuth('reg')" class="text-pink-400 font-bold cursor-pointer underline">রেজিস্টার করুন</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Profile Customization Modal -->
+    <div id="profileModal" class="fixed inset-0 bg-black/85 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#160f29] border border-purple-500 rounded-2xl w-full max-w-sm p-5 relative text-xs space-y-3">
+            <button onclick="closeModal('profileModal')" class="absolute top-3 right-3 w-7 h-7 bg-gray-800 rounded-full">✕</button>
+            <div class="flex flex-col items-center space-y-2">
+                <img id="profAvatar" src="https://via.placeholder.com/80/9333ea/ffffff?text=USER" class="w-20 h-20 rounded-full object-cover border-2 border-pink-500">
+                <label class="cursor-pointer bg-purple-800 px-3 py-1 rounded-full text-[11px]">
+                    <i class="fas fa-camera mr-1"></i> ছবি পরিবর্তন করুন
+                    <input type="file" accept="image/*" onchange="uploadAvatar(event)" class="hidden">
+                </label>
+                <h3 id="profNameDisp" class="font-bold text-base text-white">User Name</h3>
+                <p id="profEmailDisp" class="text-gray-400">email@example.com</p>
+            </div>
+            <div class="bg-[#0b0716] p-3 rounded-xl border border-purple-800 space-y-2">
+                <label class="text-gray-400">নাম পরিবর্তন করুন:</label>
+                <input type="text" id="editProfName" class="w-full bg-black border border-purple-700 p-2 rounded text-white">
+                <button onclick="saveProfile()" class="w-full btn py-2 rounded font-bold">সেভ করুন</button>
+            </div>
+            <button onclick="logoutUser()" class="w-full bg-red-600/80 py-2 rounded font-bold">লগআউট করুন</button>
+        </div>
+    </div>
+
+    <!-- Buy & Payment Modal -->
+    <div id="buyModal" class="fixed inset-0 bg-black/85 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#160f29] border border-purple-500 rounded-2xl w-full max-w-sm p-4 relative text-xs max-h-[90vh] overflow-y-auto space-y-3">
+            <button onclick="closeModal('buyModal')" class="absolute top-3 right-3 w-7 h-7 bg-gray-800 rounded-full">✕</button>
+            <h3 id="mTitle" class="font-bold text-base text-center text-white">Panel Name</h3>
+            
+            <!-- Step 1: Select Package -->
+            <div>
+                <p class="text-purple-300 font-bold mb-1">১. প্যাকেজ সিলেক্ট করুন:</p>
+                <div id="pkgList" class="space-y-1.5 max-h-36 overflow-y-auto"></div>
+            </div>
+
+            <!-- Step 2: Send Money Box -->
+            <div class="bg-[#0b0716] p-3 rounded-xl border border-pink-500/50 space-y-2">
+                <button onclick="togglePayMethods()" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-black font-extrabold py-2 rounded-lg text-xs flex items-center justify-center gap-1.5">
+                    <i class="fas fa-paper-plane"></i> SEND MONEY (পেমেন্ট নাম্বার দেখুন)
+                </button>
+                
+                <div id="activePayMethodsBox" class="hidden space-y-2 pt-1">
+                    <p class="text-[11px] text-gray-300">নিচের যেকোনো একটি নাম্বারে Send Money করে নাম্বার কপি করুন:</p>
+                    <div id="payMethodsList" class="space-y-1.5"></div>
+                </div>
+            </div>
+
+            <!-- Step 3: Sender Number & TrxID -->
+            <div class="space-y-2 bg-[#0b0716] p-3 rounded-xl border border-purple-800">
+                <p class="text-purple-300 font-bold">২. পেমেন্ট তথ্য দিন:</p>
+                <select id="selectedPayMethod" class="w-full bg-black border border-purple-700 p-2 rounded text-white"></select>
+                <input type="text" id="senderNum" placeholder="যে নাম্বার থেকে টাকা পাঠিয়েছেন" class="w-full bg-black border border-purple-700 p-2 rounded text-white">
+                <input type="text" id="trxId" placeholder="Transaction ID (TrxID) লিখুন" class="w-full bg-black border border-purple-700 p-2 rounded text-white">
+            </div>
+
+            <!-- Step 4: Confirm Order -> Choose Telegram or WhatsApp -->
+            <button onclick="showOrderChannel()" class="w-full btn py-2.5 rounded-xl font-bold text-sm shadow-lg">অর্ডার কনফার্ম করুন</button>
+
+            <div id="orderChannelBox" class="hidden bg-black/90 p-3 rounded-xl border border-green-500 space-y-2 text-center">
+                <p class="font-bold text-green-400">কোথায় অর্ডার কনফার্ম করতে চান?</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="submitOrder('telegram')" class="bg-blue-600 py-2 rounded-lg font-bold flex items-center justify-center gap-1">
+                        <i class="fab fa-telegram-plane"></i> Telegram
+                    </button>
+                    <button onclick="submitOrder('whatsapp')" class="bg-green-600 py-2 rounded-lg font-bold flex items-center justify-center gap-1">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Orders Modal -->
+    <div id="ordersModal" class="fixed inset-0 bg-black/85 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#160f29] border border-purple-500 rounded-2xl w-full max-w-sm p-4 relative max-h-[80vh] overflow-y-auto text-xs space-y-2">
+            <button onclick="closeModal('ordersModal')" class="absolute top-3 right-3 w-7 h-7 bg-gray-800 rounded-full">✕</button>
+            <h3 class="font-bold text-base text-purple-300 mb-2">আমার অর্ডারসমূহ</h3>
+            <div id="myOrdersList" class="space-y-2"></div>
+        </div>
+    </div>
+
+    <script>
+        // Load shared storage data managed by admin.html
+        const defaultPanels = [
+            { id: 1, name: "DRIP CLIENT ROOT", cat: "ROOT", pkgs: [{t:"1 Day", p:50}, {t:"7 Days", p:300}, {t:"30 Days", p:700}] }
+        ];
+        const defaultSettings = {
+            logo: "",
+            payments: {
+                bkash: { active: true, num: "01723711057" },
+                nagad: { active: true, num: "01723711057" },
+                rocket: { active: true, num: "01723711057" }
+            },
+            slides: [
+                { title: "সেরা গেমিং প্যানেল কিনুন", sub: "কিভাবে প্যানেল কিনবেন ভিডিও দেখুন", img: "", video: "https://t.me/mazedvai12" }
+            ]
+        };
+
+        let panels = JSON.parse(localStorage.getItem('mps_panels')) || defaultPanels;
+        let settings = JSON.parse(localStorage.getItem('mps_settings')) || defaultSettings;
+        let users = JSON.parse(localStorage.getItem('mps_users')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('mps_current_user')) || null;
+        let orders = JSON.parse(localStorage.getItem('mps_orders')) || [];
+
+        let curPanel = null, curPkg = null, slideIdx = 0;
+
+        function initApp() {
+            // Logo setup
+            if(settings.logo) {
+                document.getElementById('siteLogoImg').src = settings.logo;
+                document.getElementById('siteLogoImg').classList.remove('hidden');
+                document.getElementById('siteLogoFallback').classList.add('hidden');
+            }
+            updateUserUI();
+            renderSlides();
+            renderStore();
+        }
+
+        function updateUserUI() {
+            if(currentUser) {
+                document.getElementById('headerUserName').innerText = currentUser.name;
+                document.getElementById('profNameDisp').innerText = currentUser.name;
+                document.getElementById('profEmailDisp').innerText = currentUser.email;
+                document.getElementById('editProfName').value = currentUser.name;
+                if(currentUser.avatar) document.getElementById('profAvatar').src = currentUser.avatar;
+            } else {
+                document.getElementById('headerUserName').innerText = "Login / Sign Up";
+            }
+        }
+
+        // Slideshow
+        function renderSlides() {
+            const container = document.getElementById('slideContainer');
+            const dots = document.getElementById('slideDots');
+            const slides = settings.slides.length ? settings.slides : defaultSettings.slides;
+            
+            function showSlide(idx) {
+                const s = slides[idx];
+                container.innerHTML = `
+                    <a href="${s.video || '#'}" target="_blank" class="w-full h-full relative flex flex-col justify-center p-4 bg-gradient-to-r from-purple-900/90 to-pink-900/90">
+                        ${s.img ? `<img src="${s.img}" class="absolute inset-0 w-full h-full object-cover opacity-40">` : ''}
+                        <div class="relative z-10">
+                            <span class="bg-red-600 text-white text-[9px] px-2 py-0.5 rounded-full font-bold"><i class="fas fa-play mr-1"></i> ভিডিও টিউটোরিয়াল</span>
+                            <h2 class="text-base font-extrabold mt-1.5 text-white">${s.title}</h2>
+                            <p class="text-[11px] text-purple-200 mt-0.5">${s.sub}</p>
+                        </div>
+                    </a>
+                `;
+                dots.innerHTML = slides.map((_, i) => `<span class="w-2 h-2 rounded-full ${i===idx?'bg-pink-500':'bg-white/40'}"></span>`).join('');
+            }
+            showSlide(0);
+            if(slides.length > 1) {
+                setInterval(() => {
+                    slideIdx = (slideIdx + 1) % slides.length;
+                    showSlide(slideIdx);
+                }, 4000);
+            }
+        }
+
+        // Render Panels
+        function renderStore() {
+            const grid = document.getElementById('storeGrid');
+            grid.innerHTML = panels.map(p => `
+                <div class="card rounded-xl p-3 flex flex-col justify-between">
+                    <div>
+                        <span class="text-[9px] bg-purple-900 text-purple-200 px-1.5 py-0.5 rounded">${p.cat}</span>
+                        <h4 class="font-bold text-xs mt-1.5">${p.name}</h4>
+                    </div>
+                    <div class="mt-3 pt-2 border-t border-purple-800/60 flex justify-between items-center">
+                        <span class="text-xs font-bold text-pink-400">৳${p.pkgs[0] ? p.pkgs[0].p : 0}</span>
+                        <button onclick="handleBuyClick(${p.id})" class="btn px-3 py-1 rounded text-[11px] font-bold">BUY</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Auth System
+        function switchAuth(mode) {
+            document.getElementById('regForm').classList.toggle('hidden', mode !== 'reg');
+            document.getElementById('loginForm').classList.toggle('hidden', mode !== 'login');
+            document.getElementById('authTitle').innerText = mode === 'reg' ? 'নতুন অ্যাকাউন্ট তৈরি করুন' : 'লগইন করুন';
+        }
+
+        function registerUser() {
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const pass = document.getElementById('regPass').value.trim();
+            if(!name || !email || !pass) return alert("সবগুলো ঘর পূরণ করুন!");
+            if(users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+                return alert("এই জিমেইল বা নাম্বার দিয়ে ইতিমধ্যে অ্যাকাউন্ট খোলা হয়েছে! লগইন করুন।");
+            }
+            const newUser = { name, email, pass, avatar: "" };
+            users.push(newUser);
+            localStorage.setItem('mps_users', JSON.stringify(users));
+            currentUser = newUser;
+            localStorage.setItem('mps_current_user', JSON.stringify(currentUser));
+            updateUserUI();
+            closeModal('authModal');
+            alert("প্রোফাইল তৈরি সফল হয়েছে!");
+        }
+
+        function loginUser() {
+            const userInp = document.getElementById('logUser').value.trim();
+            const pass = document.getElementById('logPass').value.trim();
+            const found = users.find(u => (u.name === userInp || u.email === userInp) && u.pass === pass);
+            if(!found) return alert("ইউজারনেম বা পাসওয়ার্ড ভুল!");
+            currentUser = found;
+            localStorage.setItem('mps_current_user', JSON.stringify(currentUser));
+            updateUserUI();
+            closeModal('authModal');
+            alert("লগইন সফল হয়েছে!");
+        }
+
+        function openProfileModal() {
+            if(!currentUser) {
+                switchAuth('reg');
+                document.getElementById('authModal').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+
+        function uploadAvatar(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function() {
+                currentUser.avatar = reader.result;
+                saveUserChanges();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveProfile() {
+            const newName = document.getElementById('editProfName').value.trim();
+            if(newName) currentUser.name = newName;
+            saveUserChanges();
+            alert("প্রোফাইল আপডেট হয়েছে!");
+        }
+
+        function saveUserChanges() {
+            users = users.map(u => u.email === currentUser.email ? currentUser : u);
+            localStorage.setItem('mps_users', JSON.stringify(users));
+            localStorage.setItem('mps_current_user', JSON.stringify(currentUser));
+            updateUserUI();
+        }
+
+        function logoutUser() {
+            currentUser = null;
+            localStorage.removeItem('mps_current_user');
+            updateUserUI();
+            closeModal('profileModal');
+        }
+
+        // Buy Flow
+        function handleBuyClick(id) {
+            if(!currentUser) {
+                alert("প্যানেল কেনার আগে আপনার পার্সোনাল প্রোফাইল তৈরি করুন বা লগইন করুন!");
+                switchAuth('reg');
+                document.getElementById('authModal').classList.remove('hidden');
+                return;
+            }
+            curPanel = panels.find(p => p.id === id);
+            curPkg = curPanel.pkgs[0];
+            document.getElementById('mTitle').innerText = curPanel.name;
+            document.getElementById('activePayMethodsBox').classList.add('hidden');
+            document.getElementById('orderChannelBox').classList.add('hidden');
+            renderPkgs();
+            setupPaymentMethods();
+            document.getElementById('buyModal').classList.remove('hidden');
+        }
+
+        function renderPkgs() {
+            document.getElementById('pkgList').innerHTML = curPanel.pkgs.map((pk, idx) => `
+                <div onclick="selectPk(${idx})" class="cursor-pointer p-2 rounded-lg border flex justify-between ${curPkg.t === pk.t ? 'border-pink-500 bg-purple-900/50' : 'border-purple-800 bg-black'}">
+                    <span class="font-bold">${pk.t}</span>
+                    <span class="text-green-400 font-bold">৳${pk.p}</span>
+                </div>
+            `).join('');
+        }
+
+        function selectPk(idx) { curPkg = curPanel.pkgs[idx]; renderPkgs(); }
+
+        function togglePayMethods() {
+            document.getElementById('activePayMethodsBox').classList.toggle('hidden');
+        }
+
+        function setupPaymentMethods() {
+            const list = document.getElementById('payMethodsList');
+            const sel = document.getElementById('selectedPayMethod');
+            list.innerHTML = ''; sel.innerHTML = '';
+            const p = settings.payments;
+
+            const methods = [
+                { key: 'bkash', label: 'bKash (বিকাশ)', color: 'text-pink-400' },
+                { key: 'nagad', label: 'Nagad (নগদ)', color: 'text-orange-400' },
+                { key: 'rocket', label: 'Rocket (রকেট)', color: 'text-purple-400' }
+            ];
+
+            methods.forEach(m => {
+                if(p[m.key] && p[m.key].active) {
+                    list.innerHTML += `
+                        <div class="flex justify-between items-center bg-black p-2 rounded border border-purple-700">
+                            <div>
+                                <span class="font-bold ${m.color}">${m.label}:</span>
+                                <span class="font-mono ml-1">${p[m.key].num}</span>
+                            </div>
+                            <button onclick="copyNum('${p[m.key].num}')" class="bg-purple-700 px-2 py-1 rounded text-[10px] font-bold">Copy</button>
+                        </div>
+                    `;
+                    sel.innerHTML += `<option value="${m.label}">${m.label}</option>`;
+                }
+            });
+        }
+
+        function copyNum(num) {
+            navigator.clipboard.writeText(num);
+            alert("নাম্বার কপি হয়েছে: " + num);
+        }
+
+        function showOrderChannel() {
+            const sender = document.getElementById('senderNum').value.trim();
+            const trx = document.getElementById('trxId').value.trim();
+            if(!sender || !trx) return alert("আপনার সেন্ডার নাম্বার এবং ট্রানজেকশন আইডি (TrxID) দিন!");
+            document.getElementById('orderChannelBox').classList.remove('hidden');
+        }
+
+        function submitOrder(platform) {
+            const method = document.getElementById('selectedPayMethod').value;
+            const sender = document.getElementById('senderNum').value.trim();
+            const trx = document.getElementById('trxId').value.trim();
+
+            const msg = `New Order!%0ACustomer: ${currentUser.name}%0APanel: ${curPanel.name}%0APackage: ${curPkg.t}%0APrice: ৳${curPkg.p}%0AMethod: ${method}%0ASender: ${sender}%0ATrxID: ${trx}`;
+
+            orders.unshift({
+                user: currentUser.email,
+                userName: currentUser.name,
+                panel: `${curPanel.name} (${curPkg.t})`,
+                price: curPkg.p,
+                method, sender, trx,
+                key: "Pending"
+            });
+            localStorage.setItem('mps_orders', JSON.stringify(orders));
+
+            if(platform === 'telegram') {
+                window.open(`https://t.me/mazedvai12?text=${msg}`, '_blank');
+            } else {
+                window.open(`https://wa.me/8801723711057?text=${msg}`, '_blank');
+            }
+
+            document.getElementById('senderNum').value = '';
+            document.getElementById('trxId').value = '';
+            closeModal('buyModal');
+        }
+
+        function showMyOrders() {
+            if(!currentUser) return openProfileModal();
+            const myOrd = orders.filter(o => o.user === currentUser.email);
+            document.getElementById('myOrdersList').innerHTML = myOrd.length ? myOrd.map(o => `
+                <div class="bg-black p-2.5 rounded-lg border border-purple-800">
+                    <p class="font-bold text-pink-400">${o.panel} - ৳${o.price}</p>
+                    <p class="text-gray-400">Sender: ${o.sender} | TrxID: ${o.trx}</p>
+                    <p class="mt-1 bg-purple-950 p-1.5 rounded text-green-300 font-mono">Key: ${o.key}</p>
+                </div>
+            `).join('') : '<p class="text-center text-gray-400">আপনার কোনো অর্ডার নেই</p>';
+            document.getElementById('ordersModal').classList.remove('hidden');
+        }
+
+        function openSupportModal() { document.getElementById('supportModal').classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        initApp();
+    </script>
+</body>
+</html>
