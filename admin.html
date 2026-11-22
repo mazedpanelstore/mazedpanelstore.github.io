@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Mazed Panel Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #0b0716; color: #fff; font-family: 'Segoe UI', sans-serif; }
+        .card { background: #160f29; border: 1px solid #3b2070; }
+        .btn { background: linear-gradient(90deg, #9333ea, #ec4899); }
+    </style>
+</head>
+<body class="pb-10">
+
+    <!-- Admin Login Gate -->
+    <div id="adminLoginGate" class="fixed inset-0 bg-[#0b0716] z-50 flex items-center justify-center p-4">
+        <div class="card p-6 rounded-2xl w-full max-w-xs space-y-4 text-center">
+            <div class="w-12 h-12 rounded-full btn mx-auto flex items-center justify-center font-bold text-lg">A</div>
+            <h2 class="font-bold text-base text-pink-400">অ্যাডমিন প্যানেল লগইন</h2>
+            <input type="password" id="adminPassInp" placeholder="অ্যাডমিন পাসওয়ার্ড দিন (1234)" class="w-full bg-black border border-purple-700 p-2.5 rounded-lg text-xs text-white text-center">
+            <button onclick="checkAdminPass()" class="w-full btn py-2.5 rounded-lg font-bold text-xs">প্রবেশ করুন</button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-[#120b24] border-b border-pink-600/50 p-3 flex justify-between items-center sticky top-0 z-40">
+        <h1 class="font-bold text-sm text-pink-400"><i class="fas fa-user-shield mr-1"></i> ADMIN DASHBOARD</h1>
+        <a href="index.html" target="_blank" class="bg-purple-800 px-3 py-1 rounded-full text-xs font-bold">View Store ↗</a>
+    </header>
+
+    <main class="max-w-md mx-auto p-3 space-y-4 text-xs">
+
+        <!-- 1. Custom Logo Setup -->
+        <div class="card p-3.5 rounded-xl space-y-2">
+            <h3 class="font-bold text-purple-300 text-sm">১. স্টোরের কাস্টম লোগো সেটআপ</h3>
+            <div class="flex items-center gap-3">
+                <img id="adminLogoPreview" src="https://via.placeholder.com/50/9333ea/ffffff?text=M" class="w-12 h-12 rounded-full object-cover border border-pink-500">
+                <label class="cursor-pointer btn px-3 py-2 rounded-lg font-bold">
+                    লোগো আপলোড করুন
+                    <input type="file" accept="image/*" onchange="uploadSiteLogo(event)" class="hidden">
+                </label>
+            </div>
+        </div>
+
+        <!-- 2. Popup Channel Notice Manager (Unlimited Channels + ON/OFF) -->
+        <div class="card p-3.5 rounded-xl space-y-2.5">
+            <h3 class="font-bold text-pink-400 text-sm">২. পপআপ মেসেজ ও চ্যানেল ম্যানেজার</h3>
+            <textarea id="popupMsgInp" rows="2" placeholder="পপআপ মেসেজ লিখুন..." class="w-full bg-black border border-purple-700 p-2 rounded text-white"></textarea>
+            <button onclick="savePopupMsg()" class="w-full bg-purple-800 py-1.5 rounded font-bold">মেসেজ সেভ করুন</button>
+
+            <div class="border-t border-purple-800 pt-2 space-y-2">
+                <p class="font-bold text-yellow-300">+ নতুন চ্যানেল যোগ করুন (যত খুশি তত):</p>
+                <input type="text" id="chName" placeholder="চ্যানেলের নাম (যেমন: Main Telegram Channel)" class="w-full bg-black border border-purple-700 p-2 rounded">
+                <input type="text" id="chUrl" placeholder="চ্যানেল লিংক (https://t.me/...)" class="w-full bg-black border border-purple-700 p-2 rounded">
+                <button onclick="addChannel()" class="w-full btn py-2 rounded-lg font-bold">+ চ্যানেল যুক্ত করুন</button>
+            </div>
+
+            <div id="adminChannelsList" class="space-y-1.5 pt-1 max-h-48 overflow-y-auto"></div>
+        </div>
+
+        <!-- 3. Payment Methods Control -->
+        <div class="card p-3.5 rounded-xl space-y-2.5">
+            <h3 class="font-bold text-yellow-400 text-sm">৩. পেমেন্ট মেথড কন্ট্রোল (চালু / বন্ধ)</h3>
+            
+            <div class="bg-black p-2.5 rounded-lg border border-purple-800 space-y-1.5">
+                <div class="flex justify-between items-center">
+                    <span class="font-bold text-pink-400">bKash (বিকাশ)</span>
+                    <input type="checkbox" id="bkashActive" class="w-4 h-4 accent-pink-500">
+                </div>
+                <input type="text" id="bkashNum" placeholder="বিকাশ নাম্বার" class="w-full bg-[#160f29] border border-purple-700 p-1.5 rounded">
+            </div>
+
+            <div class="bg-black p-2.5 rounded-lg border border-purple-800 space-y-1.5">
+                <div class="flex justify-between items-center">
+                    <span class="font-bold text-orange-400">Nagad (নগদ)</span>
+                    <input type="checkbox" id="nagadActive" class="w-4 h-4 accent-orange-500">
+                </div>
+                <input type="text" id="nagadNum" placeholder="নগদ নাম্বার" class="w-full bg-[#160f29] border border-purple-700 p-1.5 rounded">
+            </div>
+
+            <div class="bg-black p-2.5 rounded-lg border border-purple-800 space-y-1.5">
+                <div class="flex justify-between items-center">
+                    <span class="font-bold text-purple-400">Rocket (রকেট)</span>
+                    <input type="checkbox" id="rocketActive" class="w-4 h-4 accent-purple-500">
+                </div>
+                <input type="text" id="rocketNum" placeholder="রকেট নাম্বার" class="w-full bg-[#160f29] border border-purple-700 p-1.5 rounded">
+            </div>
+
+            <button onclick="savePayments()" class="w-full btn py-2 rounded-lg font-bold">পেমেন্ট সেটিংস সেভ করুন</button>
+        </div>
+
+        <!-- 4. Auto-Scrolling Banner Images Manager (Clean Images Only) -->
+        <div class="card p-3.5 rounded-xl space-y-2.5">
+            <h3 class="font-bold text-cyan-400 text-sm">৪. অটো-স্ক্রল ব্যানার ছবি যুক্ত করুন</h3>
+            <p class="text-[11px] text-gray-400">ব্যানারের ওপর কোনো লেখা থাকবে না, শুধু ছবিগুলো অটোমেটিক স্ক্রল করবে।</p>
+            <input type="text" id="slideVideo" placeholder="ছবিতে ক্লিক করলে যে ভিডিও/লিংকে যাবে (ঐচ্ছিক)" class="w-full bg-black border border-purple-700 p-2 rounded">
+            <label class="block bg-black border border-dashed border-purple-600 p-2.5 rounded text-center cursor-pointer text-gray-200 font-bold">
+                <i class="fas fa-image mr-1"></i> ব্যানার ছবি সিলেক্ট করুন
+                <input type="file" accept="image/*" id="slideImgFile" class="hidden">
+            </label>
+            <button onclick="addSlide()" class="w-full btn py-2 rounded-lg font-bold">+ ব্যানার ছবি যুক্ত করুন</button>
+            <div id="adminSlideList" class="space-y-1.5 pt-1"></div>
+        </div>
+
+        <!-- 5. Add New Panel (With Categories: ROOT, NON ROOT, IOS, PC, GUILD, GUILD GLORY BOT) -->
+        <div class="card p-3.5 rounded-xl space-y-2.5">
+            <h3 class="font-bold text-green-400 text-sm">৫. নতুন প্যানেল যুক্ত করুন</h3>
+            <input type="text" id="pName" placeholder="প্যানেলের নাম (যেমন: ZYTRON PRO)" class="w-full bg-black border border-purple-700 p-2 rounded">
+            <select id="pCat" class="w-full bg-black border border-purple-700 p-2 rounded">
+                <option value="ROOT">ROOT</option>
+                <option value="NON ROOT">NON ROOT</option>
+                <option value="IOS">iOS</option>
+                <option value="PC">PC PANEL</option>
+                <option value="GUILD">GUILD</option>
+                <option value="GUILD GLORY BOT">GUILD GLORY BOT</option>
+            </select>
+            <label class="block bg-black border border-dashed border-purple-600 p-2 rounded text-center cursor-pointer text-gray-300">
+                প্যানেলের কভার ছবি (ঐচ্ছিক)
+                <input type="file" accept="image/*" id="pImgFile" class="hidden">
+            </label>
+
+            <p class="text-yellow-400 font-bold">ঘণ্টাভিত্তিক দাম (১ থেকে ২৪ ঘণ্টা):</p>
+            <div id="hoursInputs" class="grid grid-cols-4 gap-1"></div>
+
+            <p class="text-green-400 font-bold pt-1">দিনভিত্তিক দাম (১ থেকে ৩১ দিন):</p>
+            <div id="daysInputs" class="grid grid-cols-4 gap-1 max-h-40 overflow-y-auto"></div>
+
+            <button onclick="addPanel()" class="w-full btn py-2.5 rounded-lg font-bold">প্যানেল পাবলিশ করুন</button>
+        </div>
+
+        <!-- 6. Existing Panels -->
+        <div class="card p-3.5 rounded-xl space-y-2">
+            <h3 class="font-bold text-pink-400 text-sm">৬. বর্তমান প্যানেল লিস্ট</h3>
+            <div id="adminPanelList" class="space-y-1.5"></div>
+        </div>
+
+        <!-- 7. Customer Orders & Key + APK Link Delivery -->
+        <div class="card p-3.5 rounded-xl space-y-2">
+            <h3 class="font-bold text-green-400 text-sm">৭. কাস্টমার অর্ডার, Key ও APK লিংক ডেলিভারি</h3>
+            <div id="adminOrdersList" class="space-y-2.5"></div>
+        </div>
+
+    </main>
+
+    <script>
+        let panels = JSON.parse(localStorage.getItem('mps_panels')) || [];
+        let settings = JSON.parse(localStorage.getItem('mps_settings')) || {
+            logo: "",
+            payments: {
+                bkash: { active: true, num: "01723711057" },
+                nagad: { active: true, num: "01723711057" },
+                rocket: { active: true, num: "01723711057" }
+            },
+            slides: [],
+            popupMsg: "আমাদের প্যানেলের সকল আপডেট পেতে আমাদের চ্যানেলে জয়েন থাকুন।",
+            channels: []
+        };
+        if(!settings.channels) settings.channels = [];
+        let orders = JSON.parse(localStorage.getItem('mps_orders')) || [];
+
+        function checkAdminPass() {
+            const pass = document.getElementById('adminPassInp').value;
+            if(pass === "1234" || pass === "mazed123") {
+                document.getElementById('adminLoginGate').classList.add('hidden');
+                initAdmin();
+            } else {
+                alert("ভুল পাসওয়ার্ড! ডিফল্ট পাসওয়ার্ড: 1234");
+            }
+        }
+
+        function initAdmin() {
+            let hHtml = '', dHtml = '';
+            for(let i=1; i<=24; i++) hHtml += `<input type="number" id="h${i}" placeholder="${i}ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-[10px]">`;
+            for(let i=1; i<=31; i++) dHtml += `<input type="number" id="d${i}" placeholder="${i}দিন" class="bg-black border border-purple-700 p-1 rounded text-[10px]">`;
+            document.getElementById('hoursInputs').innerHTML = hHtml;
+            document.getElementById('daysInputs').innerHTML = dHtml;
+
+            if(settings.logo) document.getElementById('adminLogoPreview').src = settings.logo;
+            document.getElementById('popupMsgInp').value = settings.popupMsg || "";
+            document.getElementById('bkashActive').checked = settings.payments.bkash.active;
+            document.getElementById('bkashNum').value = settings.payments.bkash.num;
+            document.getElementById('nagadActive').checked = settings.payments.nagad.active;
+            document.getElementById('nagadNum').value = settings.payments.nagad.num;
+            document.getElementById('rocketActive').checked = settings.payments.rocket.active;
+            document.getElementById('rocketNum').value = settings.payments.rocket.num;
+
+            renderAdminLists();
+        }
+
+        function uploadSiteLogo(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function() {
+                settings.logo = reader.result;
+                document.getElementById('adminLogoPreview').src = reader.result;
+                saveSettings();
+                alert("কাস্টম লোগো সেভ হয়েছে!");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Popup & Channels
+        function savePopupMsg() {
+            settings.popupMsg = document.getElementById('popupMsgInp').value.trim();
+            saveSettings();
+            alert("পপআপ মেসেজ সেভ হয়েছে!");
+        }
+
+        function addChannel() {
+            const name = document.getElementById('chName').value.trim();
+            const url = document.getElementById('chUrl').value.trim();
+            if(!name || !url) return alert("চ্যানেলের নাম এবং লিংক দিন!");
+            settings.channels.push({ name, url, active: true });
+            saveSettings();
+            document.getElementById('chName').value = '';
+            document.getElementById('chUrl').value = '';
+            renderAdminLists();
+            alert("চ্যানেল যুক্ত হয়েছে!");
+        }
+
+        function toggleChannel(idx) {
+            settings.channels[idx].active = !settings.channels[idx].active;
+            saveSettings();
+            renderAdminLists();
+        }
+
+        function delChannel(idx) {
+            settings.channels.splice(idx, 1);
+            saveSettings();
+            renderAdminLists();
+        }
+
+        function savePayments() {
+            settings.payments = {
+                bkash: { active: document.getElementById('bkashActive').checked, num: document.getElementById('bkashNum').value.trim() },
+                nagad: { active: document.getElementById('nagadActive').checked, num: document.getElementById('nagadNum').value.trim() },
+                rocket: { active: document.getElementById('rocketActive').checked, num: document.getElementById('rocketNum').value.trim() }
+            };
+            saveSettings();
+            alert("পেমেন্ট সেটিংস আপডেট হয়েছে!");
+        }
+
+        function addSlide() {
+            const video = document.getElementById('slideVideo').value.trim();
+            const file = document.getElementById('slideImgFile').files[0];
+            if(!file) return alert("ব্যানারের জন্য একটি ছবি সিলেক্ট করুন!");
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                settings.slides.push({ video, img: reader.result });
+                saveSettings();
+                document.getElementById('slideVideo').value = '';
+                document.getElementById('slideImgFile').value = '';
+                renderAdminLists();
+                alert("নতুন ব্যানার ছবি যুক্ত হয়েছে!");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function delSlide(idx) {
+            settings.slides.splice(idx, 1);
+            saveSettings();
+            renderAdminLists();
+        }
+
+        function addPanel() {
+            const name = document.getElementById('pName').value.trim();
+            const cat = document.getElementById('pCat').value;
+            const file = document.getElementById('pImgFile').files[0];
+            if(!name) return alert("প্যানেলের নাম লিখুন!");
+
+            let pkgs = [];
+            for(let i=1; i<=24; i++) {
+                let v = Number(document.getElementById(`h${i}`).value);
+                if(v > 0) pkgs.push({ t: `${i} Hour${i>1?'s':''}`, p: v });
+            }
+            for(let i=1; i<=31; i++) {
+                let v = Number(document.getElementById(`d${i}`).value);
+                if(v > 0) pkgs.push({ t: `${i} Day${i>1?'s':''}`, p: v });
+            }
+            if(!pkgs.length) return alert("কমপক্ষে একটি প্যাকেজের দাম দিন!");
+
+            const saveNewPanel = (imgData) => {
+                panels.unshift({ id: Date.now(), name, cat, img: imgData, pkgs });
+                localStorage.setItem('mps_panels', JSON.stringify(panels));
+                document.getElementById('pName').value = '';
+                document.getElementById('pImgFile').value = '';
+                renderAdminLists();
+                alert("প্যানেল পাবলিশ হয়েছে!");
+            };
+
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = () => saveNewPanel(reader.result);
+                reader.readAsDataURL(file);
+            } else {
+                saveNewPanel("");
+            }
+        }
+
+        function delPanel(id) {
+            panels = panels.filter(p => p.id !== id);
+            localStorage.setItem('mps_panels', JSON.stringify(panels));
+            renderAdminLists();
+        }
+
+        function sendKeyAndApk(idx) {
+            const keyVal = document.getElementById(`okey-${idx}`).value.trim();
+            const apkVal = document.getElementById(`oapk-${idx}`).value.trim();
+            if(!keyVal) return alert("Key লিখুন!");
+            orders[idx].key = keyVal;
+            orders[idx].apkLink = apkVal;
+            localStorage.setItem('mps_orders', JSON.stringify(orders));
+            renderAdminLists();
+            alert("কাস্টমারের অর্ডারে Key ও APK লিংক পাঠানো হয়েছে!");
+        }
+
+        function renderAdminLists() {
+            document.getElementById('adminChannelsList').innerHTML = settings.channels.map((c, i) => `
+                <div class="flex justify-between items-center bg-black p-2 rounded border border-purple-800">
+                    <div class="truncate pr-2">
+                        <p class="font-bold text-white">${c.name}</p>
+                        <p class="text-[10px] text-gray-400 truncate">${c.url}</p>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button onclick="toggleChannel(${i})" class="${c.active ? 'bg-green-600' : 'bg-gray-600'} px-2 py-0.5 rounded text-[10px] font-bold">
+                            ${c.active ? 'ON' : 'OFF'}
+                        </button>
+                        <button onclick="delChannel(${i})" class="bg-red-600 px-2 py-0.5 rounded text-[10px]">Del</button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('adminSlideList').innerHTML = settings.slides.map((s, i) => `
+                <div class="flex justify-between items-center bg-black p-2 rounded border border-purple-800">
+                    <div class="flex items-center gap-2">
+                        <img src="${s.img}" class="w-10 h-7 object-cover rounded">
+                        <span class="text-[10px] text-gray-300">Slide #${i+1}</span>
+                    </div>
+                    <button onclick="delSlide(${i})" class="bg-red-600 px-2 py-0.5 rounded text-[10px]">Delete</button>
+                </div>
+            `).join('');
+
+            document.getElementById('adminPanelList').innerHTML = panels.map(p => `
+                <div class="flex justify-between items-center bg-black p-2 rounded border border-purple-800">
+                    <span>${p.name} (${p.cat}) - ${p.pkgs.length} Pkgs</span>
+                    <button onclick="delPanel(${p.id})" class="bg-red-600 px-2 py-0.5 rounded text-[10px]">Delete</button>
+                </div>
+            `).join('');
+
+            document.getElementById('adminOrdersList').innerHTML = orders.length ? orders.map((o, i) => `
+                <div class="bg-black p-2.5 rounded border border-purple-800 space-y-1.5">
+                    <p class="font-bold text-pink-400">${o.userName} - ${o.panel} (৳${o.price})</p>
+                    <p class="text-gray-400">Method: ${o.method} | Sender: ${o.sender} | TrxID: ${o.trx}</p>
+                    <input type="text" id="okey-${i}" value="${o.key==='Pending'?'':o.key}" placeholder="License Key দিন" class="w-full bg-[#160f29] border border-purple-700 p-1.5 rounded">
+                    <input type="text" id="oapk-${i}" value="${o.apkLink||''}" placeholder="প্যানেল অ্যাপ (APK) ডাউনলোড লিংক দিন" class="w-full bg-[#160f29] border border-purple-700 p-1.5 rounded">
+                    <button onclick="sendKeyAndApk(${i})" class="w-full bg-green-600 py-1.5 rounded font-bold">Key ও APK লিংক পাঠান</button>
+                </div>
+            `).join('') : '<p class="text-gray-400">কোনো অর্ডার নেই</p>';
+        }
+
+        function saveSettings() {
+            localStorage.setItem('mps_settings', JSON.stringify(settings));
+        }
+    </script>
+</body>
+</html>
