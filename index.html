@@ -47,11 +47,11 @@
         <div id="adminBox" class="hidden bg-[#1a1033] border-2 border-pink-500 p-3 rounded-xl mb-4 text-xs space-y-3">
             <div class="flex justify-between items-center border-b border-purple-800 pb-2">
                 <h3 class="font-bold text-pink-400 text-sm">অ্যাডমিন কন্ট্রোল প্যানেল</h3>
-                <button onclick="toggleAdmin()" class="text-gray-400">✕</button>
+                <button onclick="toggleAdmin()" class="text-gray-400 text-sm">✕</button>
             </div>
 
             <div class="bg-[#0b0716] p-2.5 rounded-lg space-y-2 border border-purple-800">
-                <p class="font-bold text-purple-300">+ নতুন প্যানেল অ্যাড করুন</p>
+                <p class="font-bold text-purple-300">+ নতুন প্যানেল অ্যাড করুন (যেগুলোর দাম বসাবেন শুধু সেগুলোই দেখাবে)</p>
                 <input type="text" id="pName" placeholder="প্যানেলের নাম (যেমন: VIP ROOT)" class="w-full bg-black border border-purple-700 p-2 rounded text-white">
                 <select id="pCat" class="w-full bg-black border border-purple-700 p-2 rounded text-white">
                     <option value="ROOT">ROOT</option>
@@ -59,213 +59,36 @@
                     <option value="IOS">IOS</option>
                     <option value="PC">PC</option>
                 </select>
-                <div class="grid grid-cols-2 gap-1.5">
-                    <input type="number" id="p1h" placeholder="১ ঘণ্টার দাম (৳)" class="bg-black border border-purple-700 p-1.5 rounded text-white">
-                    <input type="number" id="p1d" placeholder="১ দিনের দাম (৳)" class="bg-black border border-purple-700 p-1.5 rounded text-white">
-                    <input type="number" id="p7d" placeholder="৭ দিনের দাম (৳)" class="bg-black border border-purple-700 p-1.5 rounded text-white">
-                    <input type="number" id="p30d" placeholder="৩০ দিনের দাম (৳)" class="bg-black border border-purple-700 p-1.5 rounded text-white">
+
+                <p class="text-yellow-400 font-bold pt-1">ঘণ্টাভিত্তিক দাম (১ থেকে ২৪ ঘণ্টা):</p>
+                <div class="grid grid-cols-4 gap-1">
+                    <input type="number" id="h1" placeholder="১ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h2" placeholder="২ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h3" placeholder="৩ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h4" placeholder="৪ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h5" placeholder="৫ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h6" placeholder="৬ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h7" placeholder="৭ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h8" placeholder="৮ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h9" placeholder="৯ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h10" placeholder="১০ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h11" placeholder="১১ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h12" placeholder="১২ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h13" placeholder="১৩ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h14" placeholder="১৪ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h15" placeholder="১৫ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h16" placeholder="১৬ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h17" placeholder="১৭ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h18" placeholder="১৮ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h19" placeholder="১৯ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h20" placeholder="২০ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h21" placeholder="২১ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h22" placeholder="২২ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h23" placeholder="২৩ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="h24" placeholder="২৪ঘণ্টা" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
                 </div>
-                <button onclick="addPanel()" class="w-full btn py-2 rounded font-bold text-white">প্যানেল পাবলিশ করুন</button>
-            </div>
 
-            <div>
-                <p class="font-bold text-yellow-400 mb-1">প্যানেল লিস্ট (ডিলিট করতে চাইলে):</p>
-                <div id="adminPanelList" class="space-y-1 max-h-32 overflow-y-auto"></div>
-            </div>
-
-            <div>
-                <p class="font-bold text-green-400 mb-1">কাস্টমার অর্ডার ও Key ডেলিভারি:</p>
-                <div id="adminOrders" class="space-y-2 max-h-48 overflow-y-auto"></div>
-            </div>
-        </div>
-
-        <!-- Store Title -->
-        <h3 class="text-xs font-bold text-purple-300 mb-2">AVAILABLE PANELS (হোম পেজ)</h3>
-
-        <!-- Store Grid -->
-        <div id="storeGrid" class="grid grid-cols-2 gap-2.5"></div>
-    </main>
-
-    <!-- Buy Modal -->
-    <div id="buyModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-[#160f29] border border-purple-500 rounded-xl w-full max-w-sm p-4 relative text-xs">
-            <button onclick="closeBuy()" class="absolute top-2 right-2 w-7 h-7 bg-gray-800 rounded-full text-white">✕</button>
-            <h3 id="mTitle" class="font-bold text-base text-center text-white mb-1">Panel</h3>
-            <p class="text-center text-green-400 text-[11px] mb-3">⚡ Instant Key Delivery</p>
-            
-            <p class="text-purple-300 font-bold mb-1">প্যাকেজ সিলেক্ট করুন:</p>
-            <div id="pkgList" class="space-y-1.5 mb-3"></div>
-
-            <div class="space-y-2 bg-[#0b0716] p-2.5 rounded-lg border border-purple-800 mb-3">
-                <select id="payMethod" class="w-full bg-black border border-purple-700 p-2 rounded text-white">
-                    <option value="Nagad">Nagad (01723711057)</option>
-                    <option value="Rocket">Rocket (01723711057)</option>
-                </select>
-                <input type="text" id="trxId" placeholder="Transaction ID (TrxID) লিখুন" class="w-full bg-black border border-purple-700 p-2 rounded text-white">
-            </div>
-
-            <button onclick="confirmOrder()" class="w-full btn py-2.5 rounded-lg font-bold text-sm text-white">কনফার্ম অর্ডার</button>
-        </div>
-    </div>
-
-    <!-- My Orders Modal -->
-    <div id="ordersModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-[#160f29] border border-purple-500 rounded-xl w-full max-w-sm p-4 relative max-h-[80vh] overflow-y-auto text-xs">
-            <button onclick="document.getElementById('ordersModal').classList.add('hidden')" class="absolute top-2 right-2 w-7 h-7 bg-gray-800 rounded-full text-white">✕</button>
-            <h3 class="font-bold text-base text-purple-300 mb-3">আমার অর্ডারসমূহ</h3>
-            <div id="myOrdersList" class="space-y-2"></div>
-        </div>
-    </div>
-
-    <!-- Bottom Nav -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-[#120b24] border-t border-purple-800 py-2 flex justify-around text-xs z-40 max-w-md mx-auto">
-        <button onclick="location.reload()" class="text-pink-500 flex flex-col items-center"><i class="fas fa-store text-base"></i><span>Store</span></button>
-        <button onclick="showMyOrders()" class="text-gray-400 flex flex-col items-center"><i class="fas fa-box text-base"></i><span>My Orders</span></button>
-        <a href="https://t.me/mazedvai12" target="_blank" class="text-gray-400 flex flex-col items-center"><i class="fab fa-telegram-plane text-base"></i><span>Support</span></a>
-    </nav>
-
-    <script>
-        const defaultData = [
-            { id: 1, name: "DRIP CLIENT ROOT", cat: "ROOT", pkgs: [{t:"1 HOUR",p:15}, {t:"1 DAY",p:50}, {t:"7 DAYS",p:300}, {t:"30 DAYS",p:700}] },
-            { id: 2, name: "VYRTX NON-ROOT", cat: "NON ROOT", pkgs: [{t:"1 HOUR",p:20}, {t:"1 DAY",p:60}, {t:"7 DAYS",p:350}, {t:"30 DAYS",p:850}] }
-        ];
-
-        let panels = JSON.parse(localStorage.getItem('mazed_panels_v3')) || defaultData;
-        let orders = JSON.parse(localStorage.getItem('mazed_orders_v3')) || [];
-        let curPanel = null, curPkg = null;
-
-        function renderStore() {
-            const grid = document.getElementById('storeGrid');
-            if(!grid) return;
-            grid.innerHTML = panels.map(p => `
-                <div class="card rounded-xl p-3 flex flex-col justify-between">
-                    <div>
-                        <span class="text-[9px] bg-purple-900 text-purple-200 px-1.5 py-0.5 rounded">${p.cat}</span>
-                        <h4 class="font-bold text-xs mt-1.5">${p.name}</h4>
-                    </div>
-                    <div class="mt-3 pt-2 border-t border-purple-800/60 flex justify-between items-center">
-                        <span class="text-xs font-bold text-pink-400">৳${p.pkgs[0].p}</span>
-                        <button onclick="openBuy(${p.id})" class="btn px-3 py-1 rounded text-[11px] font-bold text-white">BUY</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function toggleAdmin() {
-            const box = document.getElementById('adminBox');
-            box.classList.toggle('hidden');
-            renderAdmin();
-        }
-
-        function renderAdmin() {
-            document.getElementById('adminPanelList').innerHTML = panels.map(p => `
-                <div class="flex justify-between items-center bg-black p-1.5 rounded border border-purple-900 text-white">
-                    <span>${p.name} (${p.cat})</span>
-                    <button onclick="delPanel(${p.id})" class="bg-red-600 px-2 py-0.5 rounded text-[10px]">Delete</button>
-                </div>
-            `).join('');
-
-            document.getElementById('adminOrders').innerHTML = orders.length ? orders.map((o, i) => `
-                <div class="bg-black p-2 rounded border border-purple-900 text-white">
-                    <p class="font-bold text-pink-400">${o.panel} - ৳${o.price}</p>
-                    <p>TrxID: <span class="text-yellow-400">${o.trx}</span> (${o.method})</p>
-                    <div class="flex gap-1 mt-1">
-                        <input type="text" id="k-${i}" value="${o.key === 'Pending' ? '' : o.key}" placeholder="Key দিন" class="w-full bg-[#160f29] border border-purple-700 p-1 rounded text-white">
-                        <button onclick="sendKey(${i})" class="bg-green-600 px-2 rounded font-bold">Send</button>
-                    </div>
-                </div>
-            `).join('') : '<p class="text-gray-400">কোনো অর্ডার নেই</p>';
-        }
-
-        function addPanel() {
-            const name = document.getElementById('pName').value.trim();
-            const cat = document.getElementById('pCat').value;
-            const p1h = Number(document.getElementById('p1h').value) || 20;
-            const p1d = Number(document.getElementById('p1d').value) || 60;
-            const p7d = Number(document.getElementById('p7d').value) || 300;
-            const p30d = Number(document.getElementById('p30d').value) || 700;
-
-            if(!name) return alert("প্যানেলের নাম লিখুন!");
-
-            panels.unshift({
-                id: Date.now(), name, cat,
-                pkgs: [{t:"1 HOUR",p:p1h}, {t:"1 DAY",p:p1d}, {t:"7 DAYS",p:p7d}, {t:"30 DAYS",p:p30d}]
-            });
-            localStorage.setItem('mazed_panels_v3', JSON.stringify(panels));
-            document.getElementById('pName').value = '';
-            renderStore();
-            renderAdmin();
-            alert("প্যানেল যুক্ত হয়েছে!");
-        }
-
-        function delPanel(id) {
-            panels = panels.filter(p => p.id !== id);
-            localStorage.setItem('mazed_panels_v3', JSON.stringify(panels));
-            renderStore();
-            renderAdmin();
-        }
-
-        function openBuy(id) {
-            curPanel = panels.find(p => p.id === id);
-            curPkg = curPanel.pkgs[0];
-            document.getElementById('mTitle').innerText = curPanel.name;
-            renderPkgs();
-            document.getElementById('buyModal').classList.remove('hidden');
-        }
-
-        function renderPkgs() {
-            document.getElementById('pkgList').innerHTML = curPanel.pkgs.map((pk, idx) => `
-                <div onclick="selectPk(${idx})" class="cursor-pointer p-2 rounded border flex justify-between ${curPkg.t === pk.t ? 'border-pink-500 bg-purple-900/50' : 'border-purple-800 bg-black'} text-white">
-                    <span class="font-bold">${pk.t}</span>
-                    <span class="text-green-400 font-bold">৳${pk.p}</span>
-                </div>
-            `).join('');
-        }
-
-        function selectPk(idx) {
-            curPkg = curPanel.pkgs[idx];
-            renderPkgs();
-        }
-
-        function closeBuy() { document.getElementById('buyModal').classList.add('hidden'); }
-
-        function confirmOrder() {
-            const trx = document.getElementById('trxId').value.trim();
-            if(!trx) return alert("TrxID দিন!");
-            orders.unshift({
-                panel: `${curPanel.name} (${curPkg.t})`,
-                price: curPkg.p,
-                method: document.getElementById('payMethod').value,
-                trx: trx,
-                key: "Pending"
-            });
-            localStorage.setItem('mazed_orders_v3', JSON.stringify(orders));
-            document.getElementById('trxId').value = '';
-            closeBuy();
-            alert("অর্ডার সফল হয়েছে! My Orders চেক করুন।");
-        }
-
-        function showMyOrders() {
-            document.getElementById('myOrdersList').innerHTML = orders.length ? orders.map(o => `
-                <div class="bg-black p-2.5 rounded border border-purple-800 text-white">
-                    <p class="font-bold text-pink-400">${o.panel} - ৳${o.price}</p>
-                    <p class="text-gray-400">TrxID: ${o.trx}</p>
-                    <p class="mt-1 bg-purple-950 p-1.5 rounded text-green-300 font-mono">Key: ${o.key}</p>
-                </div>
-            `).join('') : '<p class="text-center text-gray-400">কোনো অর্ডার নেই</p>';
-            document.getElementById('ordersModal').classList.remove('hidden');
-        }
-
-        function sendKey(i) {
-            const val = document.getElementById(`k-${i}`).value.trim();
-            if(!val) return alert("Key লিখুন!");
-            orders[i].key = val;
-            localStorage.setItem('mazed_orders_v3', JSON.stringify(orders));
-            renderAdmin();
-            alert("Key পাঠানো হয়েছে!");
-        }
-
-        renderStore();
-    </script>
-</body>
-</html>
+                <p class="text-green-400 font-bold pt-2">দিনভিত্তিক দাম (১ থেকে ৩১ দিন):</p>
+                <div class="grid grid-cols-4 gap-1 max-h-40 overflow-y-auto">
+                    <input type="number" id="d1" placeholder="১দিন" class="bg-black border border-purple-700 p-1 rounded text-white text-[10px]">
+                    <input type="number" id="d2" placeholder="২দিন" class="bg-black border border-
